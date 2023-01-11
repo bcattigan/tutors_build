@@ -8,7 +8,8 @@
     "clean": "tsc --build --clean",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
-    "start": "tsc --build && node ./src/tutors_build.js && tsc --build --clean"
+    "start": "tsc --build && node ./src/tutors_build.js && tsc --build --clean",
+    "test": "tsc --build && node ./src/tutors_build.js -t && tsc --build --clean"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,9 @@
     "url": "https://github.com/bcattigan/tutors_build/issues"
   },
   "homepage": "https://github.com/bcattigan/tutors_build#readme",
+  "bin": {
+    "tutors-build": "./src/tutors_build.js"
+  },
   "devDependencies": {
     "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
@@ -31,5 +35,11 @@
     "eslint-config-prettier": "^8.7.0",
     "prettier": "^2.8.4",
     "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@types/inquirer": "^9.0.3",
+    "chalk": "^4.1.2",
+    "commander": "^10.0.0",
+    "inquirer": "^8.2.5"
   }
 }
