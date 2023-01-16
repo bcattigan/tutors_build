@@ -1,0 +1,158 @@
+title: Example
+weeks:
+  - 2023-01-02:
+      title: Week 1
+      type: Registration
+  - 2023-01-09:
+      title: Week 2
+      type: Induction
+  - 2023-01-16:
+      title: Week 3
+      type: Tuition
+  - 2023-01-23:
+      title: Week 4
+      type: Tuition
+  - 2023-01-30:
+      title: Week 5
+      type: Tuition
+  - 2023-02-06:
+      title: Week 6
+      type: Reading
+  - 2023-02-13:
+      title: Week 7
+      type: Tuition
+  - 2023-02-20:
+      title: Week 8
+      type: Tuition
+  - 2023-02-27:
+      title: Week 9
+      type: Tuition
+  - 2023-03-06:
+      title: Week 10
+      type: Reading
+  - 2023-03-13:
+      title: Week 11
+      type: Tuition
+  - 2023-03-20:
+      title: Week 12
+      type: Tuition
+  - 2023-03-27:
+      title: Week 13
+      type: Tuition
+  - 2023-04-03:
+      title: Week 14
+      type: Reading
+  - 2023-04-10:
+      title: Week 15
+      type: Tuition
+  - 2023-04-17:
+      title: Week 16
+      type: Tuition
+  - 2023-04-24:
+      title: Week 17
+      type: Tuition
+  - 2023-05-01:
+      title: Week 18
+      type: Reading
+  - 2023-05-08:
+      title: Week 19
+      type: Tuition
+  - 2023-05-15:
+      title: Week 20
+      type: Tuition
+  - 2023-05-22:
+      title: Week 21
+      type: Tuition
+  - 2023-05-29:
+      title: Week 22
+      type: Reading
+  - 2023-06-05:
+      title: Week 23
+      type: Tuition
+  - 2023-06-12:
+      title: Week 24
+      type: Tuition
+  - 2023-06-19:
+      title: Week 25
+      type: Tuition
+  - 2023-06-26:
+      title: Week 26
+      type: Reading
+  - 2023-07-03:
+      title: Week 27
+      type: Tuition
+  - 2023-07-10:
+      title: Week 28
+      type: Tuition
+  - 2023-07-17:
+      title: Week 29
+      type: Tuition
+  - 2023-07-24:
+      title: Week 30
+      type: Reading
+  - 2023-07-31:
+      title: Week 31
+      type: Tuition
+  - 2023-08-07:
+      title: Week 32
+      type: Tuition
+  - 2023-08-14:
+      title: Week 33
+      type: Tuition
+  - 2023-08-21:
+      title: Week 34
+      type: Reading
+  - 2023-08-28:
+      title: Week 35
+      type: Tuition
+  - 2023-09-04:
+      title: Week 36
+      type: Tuition
+  - 2023-09-11:
+      title: Week 37
+      type: Tuition
+  - 2023-09-18:
+      title: Week 38
+      type: Reading
+  - 2023-09-25:
+      title: Week 39
+      type: Tuition
+  - 2023-10-02:
+      title: Week 40
+      type: Tuition
+  - 2023-10-09:
+      title: Week 41
+      type: Tuition
+  - 2023-10-16:
+      title: Week 42
+      type: Reading
+  - 2023-10-23:
+      title: Week 43
+      type: Tuition
+  - 2023-10-30:
+      title: Week 44
+      type: Tuition
+  - 2023-11-06:
+      title: Week 45
+      type: Tuition
+  - 2023-11-13:
+      title: Week 46
+      type: Reading
+  - 2023-11-20:
+      title: Week 47
+      type: Tuition
+  - 2023-11-27:
+      title: Week 48
+      type: Tuition
+  - 2023-12-04:
+      title: Week 49
+      type: Tuition
+  - 2023-12-11:
+      title: Week 50
+      type: Reading
+  - 2023-12-18:
+      title: Week 51
+      type: Tuition
+  - 2023-12-25:
+      title: Week 52
+      type: Tuition

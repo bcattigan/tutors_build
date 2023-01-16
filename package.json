@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
     "start": "tsc --build && node ./src/tutors_build.js && tsc --build --clean",
-    "test": "tsc --build && node ./src/tutors_build.js -t && tsc --build --clean"
+    "course": "tsc --build && node ./src/tutors_build.js -c && tsc --build --clean"
   },
   "repository": {
     "type": "git",
@@ -38,8 +38,12 @@
   },
   "dependencies": {
     "@types/inquirer": "^9.0.3",
+    "@types/js-yaml": "^4.0.5",
     "chalk": "^4.1.2",
     "commander": "^10.0.0",
-    "inquirer": "^8.2.5"
+    "inquirer": "^8.2.5",
+    "js-yaml": "^4.1.0",
+    "jsrender": "^1.0.12",
+    "open": "^8.4.2"
   }
 }
