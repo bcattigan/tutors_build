@@ -185,6 +185,9 @@ export const propertiesObjPrompts = {
             if (!value) {
               reject("Cannot be empty");
             }
+            if (!value.startsWith("course/")) {
+              reject("Must start with course/");
+            }
             resolve(true);
           });
         }
@@ -256,5 +259,29 @@ export const propertiesObjPrompts = {
 
     companionsObj = await inquirer.prompt(companions);
     return companionsObj;
+  }
+};
+
+export const calenderPrompts = {
+  calendarConfirm: async function () {
+    const calendarConfirm = [
+      {
+        name: "calendarConfirm",
+        type: "list",
+        message: "Use calendar feature?",
+        choices: [
+          { name: "Yes", value: true },
+          { name: "No", value: false }
+        ]
+      }
+    ];
+
+    let calendar = false;
+
+    await inquirer.prompt(calendarConfirm).then(async (answer) => {
+      calendar = answer.calendarConfirm;
+    });
+
+    return calendar;
   }
 };

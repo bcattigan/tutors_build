@@ -1,4 +1,8 @@
 import inquirer from "inquirer";
+import chalk from "chalk";
+import path from "path";
+import open from "open";
+import { currentDir } from "../utils/utils";
 
 export const commonPrompts = {
   icon: async function () {
@@ -67,6 +71,7 @@ export const commonPrompts = {
 
     await inquirer.prompt(iconOption).then(async (iconAnswer) => {
       if (iconAnswer.icon == 1) {
+        await open("https://icon-sets.iconify.design/");
         await inquirer.prompt(iconifyPrompts).then(async (iconifyAnswers) => {
           iconObj = {
             icon: {
@@ -87,5 +92,33 @@ export const commonPrompts = {
       }
     });
     return iconObj;
+  },
+
+  updateGenericTemplateFile: async function (file: string, pathToOpen: string) {
+    const updateFile = [
+      {
+        name: "updateFile",
+        type: "input",
+        message: `Have you updated ${file}? (Y/N)`,
+        validate: (value: string) => {
+          const pattern = /^[YN]{1}$/i;
+          const noPattern = /^[N]{1}$/i;
+          return new Promise((resolve, reject) => {
+            if (!pattern.test(value)) {
+              reject("Only valid input is Y/N");
+            }
+            if (noPattern.test(value)) {
+              reject(`Please update ${file}`);
+            }
+            resolve(true);
+          });
+        }
+      }
+    ];
+
+    console.log(chalk.greenBright(`\nPlease update ${file}`));
+    const filePath = path.join(currentDir, pathToOpen);
+    await open(filePath);
+    await inquirer.prompt(updateFile);
   }
 };
