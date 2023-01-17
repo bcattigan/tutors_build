@@ -5,6 +5,44 @@ import open from "open";
 import { currentDir } from "../utils/utils";
 
 export const commonPrompts = {
+  titleAndDesc: async function (type: string) {
+    const titleAndDesc = [
+      {
+        name: "title",
+        type: "input",
+        message: `${type} title?`,
+        validate: (value: string) => {
+          return new Promise((resolve, reject) => {
+            if (!value) {
+              reject("Cannot be empty");
+            }
+            resolve(true);
+          });
+        }
+      },
+      {
+        name: "desc",
+        type: "input",
+        message: `${type} description?`,
+        validate: (value: string) => {
+          return new Promise((resolve, reject) => {
+            if (!value) {
+              reject("Cannot be empty");
+            }
+            resolve(true);
+          });
+        }
+      }
+    ];
+
+    const titleAndDescObj: {
+      title: string;
+      desc: string;
+    } = await inquirer.prompt(titleAndDesc);
+
+    return titleAndDescObj;
+  },
+
   icon: async function () {
     const iconOption = [
       {
