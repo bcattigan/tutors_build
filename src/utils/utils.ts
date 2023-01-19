@@ -63,3 +63,27 @@ async function catchFileErrors(outputFilePath: string, error: unknown, dir: stri
     process.exit();
   }
 }
+
+export function getFolderCountOfType(type: string): string {
+  let count = 1;
+  let folderPrefix = "";
+  try {
+    const directoryWalk = fs.readdirSync(".");
+    directoryWalk.forEach((item) => {
+      if (fs.statSync(item).isDirectory()) {
+        if (item.startsWith(type)) {
+          count++;
+        }
+      }
+    });
+    if (count < 10) {
+      folderPrefix = `${type}-0${count}`;
+    } else {
+      folderPrefix = `${type}-${count}`;
+    }
+  } catch (err) {
+    console.log(chalk.red(`Error while checking count of folder type (${type}): ${err}`));
+    process.exit();
+  }
+  return folderPrefix;
+}
