@@ -5,7 +5,7 @@ import open from "open";
 import { currentDir } from "../utils/utils";
 
 export const commonPrompts = {
-  titleAndDesc: async function (type: string) {
+  titleAndDesc: async function (type: string, noDesc = false) {
     const titleAndDesc = [
       {
         name: "title",
@@ -35,9 +35,13 @@ export const commonPrompts = {
       }
     ];
 
+    if (noDesc) {
+      titleAndDesc.pop();
+    }
+
     const titleAndDescObj: {
       title: string;
-      desc: string;
+      desc?: string;
     } = await inquirer.prompt(titleAndDesc);
 
     return titleAndDescObj;
