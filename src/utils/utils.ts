@@ -15,9 +15,10 @@ export function writeToTemplate(template: string, input: object, outputDir: stri
     const fileTemplate = fs.readFileSync(templatePath).toString();
     const renderTemplate = jsrender.templates(fileTemplate);
     const finalTemplate = renderTemplate.render(input);
-    fs.mkdirSync(outputPath, { recursive: true });
-    console.log(chalk.yellow("\nCreating..."));
-    console.log(chalk.yellow(`folder created: ${outputPath}`));
+    if (!fs.existsSync(outputPath)) {
+      fs.mkdirSync(outputPath, { recursive: true });
+      console.log(chalk.yellow(`folder created: ${outputPath}`));
+    }
     fs.writeFileSync(outputFilePath, finalTemplate);
     console.log(chalk.yellow(`file created: ${outputFilePath}`));
   } catch (err) {
@@ -64,26 +65,31 @@ async function catchFileErrors(outputFilePath: string, error: unknown, dir: stri
   }
 }
 
-export function getFolderCountOfType(type: string): string {
-  let count = 1;
-  let folderPrefix = "";
-  try {
-    const directoryWalk = fs.readdirSync(".");
-    directoryWalk.forEach((item) => {
-      if (fs.statSync(item).isDirectory()) {
-        if (item.startsWith(type)) {
-          count++;
+export function getFolderCountOfType(type: string | undefined): { order: string; folderPrefix: string } {
+  let orderObj: { order: string; folderPrefix: string };
+  if (type) {
+    let fullCount = 1;
+    let stringFullCount = "";
+    let typeCount = 1;
+    let stringTypeCount = "";
+    try {
+      const directoryWalk = fs.readdirSync(".");
+      directoryWalk.forEach((item) => {
+        if (fs.statSync(item).isDirectory()) {
+          fullCount++;
+          if (item.startsWith(type)) typeCount++;
         }
-      }
-    });
-    if (count < 10) {
-      folderPrefix = `${type}-0${count}`;
-    } else {
-      folderPrefix = `${type}-${count}`;
+      });
+      fullCount < 10 ? (stringFullCount = `0${fullCount}`) : (stringFullCount = `${fullCount}`);
+      typeCount < 10 ? (stringTypeCount = `0${typeCount}`) : (stringTypeCount = `${typeCount}`);
+    } catch (err) {
+      console.log(chalk.red(`Error while checking count of folder type (${type}): ${err}`));
+      process.exit();
     }
-  } catch (err) {
-    console.log(chalk.red(`Error while checking count of folder type (${type}): ${err}`));
+    orderObj = { order: stringFullCount, folderPrefix: `${type}-${stringTypeCount}` };
+  } else {
+    console.log(chalk.red(`Error while checking count of folder type. Type was not defined`));
     process.exit();
   }
-  return folderPrefix;
+  return orderObj;
 }

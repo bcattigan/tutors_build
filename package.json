@@ -11,7 +11,8 @@
     "start": "tsc --build && node ./src/tutors_build.js && tsc --build --clean",
     "course": "tsc --build && node ./src/tutors_build.js -c && tsc --build --clean",
     "topic": "tsc --build && node ./src/tutors_build.js -t && tsc --build --clean",
-    "segment": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean"
+    "segment": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean",
+    "web": "tsc --build && node ./src/tutors_build.js -w && tsc --build --clean"
   },
   "repository": {
     "type": "git",
