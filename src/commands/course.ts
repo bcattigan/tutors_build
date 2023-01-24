@@ -10,6 +10,7 @@ export async function buildCourse() {
   const calendarBoolean = await calenderPrompts.calendarConfirm();
   const enrollmentBoolean = propertiesObj.enrollment;
   delete propertiesObj.enrollment;
+  console.log();
   writeToTemplate("course/course.md", courseObj, courseObj.title);
   createYamlFileFromObject("properties", propertiesObj, courseObj.title);
   copyGenericTemplateFiles(propertiesObj, calendarBoolean, enrollmentBoolean, courseObj.title);
@@ -17,10 +18,7 @@ export async function buildCourse() {
 }
 
 async function createPropertiesObj() {
-  const generalItems = {
-    hideVideos: false,
-    ignore: ["topic-XX-EXAMPLE"]
-  };
+  const generalItems = { hideVideos: false, ignore: ["topic-XX-EXAMPLE"] };
   return {
     ...(await propertiesObjPrompts.credits()),
     ...(await propertiesObjPrompts.ignorePin()),
@@ -34,25 +32,13 @@ async function createPropertiesObj() {
 
 function copyGenericTemplateFiles(propertiesObj: object, calendarBoolean: boolean, enrollmentBoolean: boolean | undefined, dir: string) {
   copyGenericTemplateFile("course/package.json", dir);
-  if (!("icon" in propertiesObj)) {
-    copyGenericTemplateFile("course/course.png", dir);
-  }
-  if (calendarBoolean) {
-    copyGenericTemplateFile("course/calendar.yaml", dir);
-  }
-  if (enrollmentBoolean || "whitelist" in propertiesObj) {
-    copyGenericTemplateFile("course/enrollment.yaml", dir);
-  }
+  if (!("icon" in propertiesObj)) copyGenericTemplateFile("course/course.png", dir);
+  if (calendarBoolean) copyGenericTemplateFile("course/calendar.yaml", dir);
+  if (enrollmentBoolean || "whitelist" in propertiesObj) copyGenericTemplateFile("course/enrollment.yaml", dir);
 }
 
 async function updateGenericTemplateFiles(propertiesObj: object, calendarBoolean: boolean, enrollmentBoolean: boolean | undefined, dir: string) {
-  if (!("icon" in propertiesObj)) {
-    await commonPrompts.updateGenericTemplateFile("course.png (.png, .jpg, .jpeg and .gif accepted)", `${dir}`);
-  }
-  if (calendarBoolean) {
-    await commonPrompts.updateGenericTemplateFile("calendar.yaml", `${dir}/calendar.yaml`);
-  }
-  if (enrollmentBoolean || "whitelist" in propertiesObj) {
-    await commonPrompts.updateGenericTemplateFile("enrollment.yaml", `${dir}/enrollment.yaml`);
-  }
+  if (!("icon" in propertiesObj)) await commonPrompts.updateGenericTemplateFile("course.png (.png, .jpg, .jpeg and .gif accepted)", `${dir}`);
+  if (calendarBoolean) await commonPrompts.updateGenericTemplateFile("calendar.yaml", `${dir}/calendar.yaml`);
+  if (enrollmentBoolean || "whitelist" in propertiesObj) await commonPrompts.updateGenericTemplateFile("enrollment.yaml", `${dir}/enrollment.yaml`);
 }

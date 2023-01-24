@@ -10,12 +10,8 @@ export const courseObjPrompts = {
         message: "Course title?",
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
-            if (!value) {
-              reject("Cannot be empty");
-            }
-            if (fs.existsSync(value)) {
-              reject("Folder with this course name already exists in current location");
-            }
+            if (!value) reject("Cannot be empty");
+            if (fs.existsSync(value)) reject("Folder with this course name already exists in current location");
             resolve(true);
           });
         }
@@ -26,19 +22,14 @@ export const courseObjPrompts = {
         message: "Course description?",
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
-            if (!value) {
-              reject("Cannot be empty");
-            }
+            if (!value) reject("Cannot be empty");
             resolve(true);
           });
         }
       }
     ];
 
-    const courseObj: {
-      title: string;
-      desc: string;
-    } = await inquirer.prompt(titleAndDesc);
+    const courseObj: { title: string; desc: string } = await inquirer.prompt(titleAndDesc);
 
     return courseObj;
   }
@@ -53,18 +44,14 @@ export const propertiesObjPrompts = {
         message: "Who created the course?",
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
-            if (!value) {
-              reject("Cannot be empty");
-            }
+            if (!value) reject("Cannot be empty");
             resolve(true);
           });
         }
       }
     ];
 
-    const creditsObj: {
-      credits: string;
-    } = await inquirer.prompt(credits);
+    const creditsObj: { credits: string } = await inquirer.prompt(credits);
 
     return creditsObj;
   },
@@ -77,27 +64,17 @@ export const propertiesObjPrompts = {
         message: "Set your ignore pin (min 4 digits):",
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
-            if (!value) {
-              reject("Cannot be empty");
-            }
-            if (isNaN(Number(value))) {
-              reject("Must be a number");
-            }
-            if (value.includes(".")) {
-              reject("Must be a whole number");
-            }
-            if (value.toString().length < 4) {
-              reject("Must be minimum 4 digits");
-            }
+            if (!value) reject("Cannot be empty");
+            if (isNaN(Number(value))) reject("Must be a number");
+            if (value.includes(".")) reject("Must be a whole number");
+            if (value.toString().length < 4) reject("Must be minimum 4 digits");
             resolve(true);
           });
         }
       }
     ];
 
-    const ignorePinObj: {
-      ignorepin: number;
-    } = await inquirer.prompt(ignorePin);
+    const ignorePinObj: { ignorepin: number } = await inquirer.prompt(ignorePin);
 
     return ignorePinObj;
   },
@@ -137,13 +114,7 @@ export const propertiesObjPrompts = {
       }
     ];
 
-    const authObj: {
-      auth: number;
-      whitelist?: number;
-      enrollment?: boolean;
-    } = {
-      auth: 0
-    };
+    const authObj: { auth: number; whitelist?: number; enrollment?: boolean } = { auth: 0 };
 
     await inquirer.prompt(auth).then(async (answer) => {
       authObj.auth = answer.auth;
@@ -182,12 +153,8 @@ export const propertiesObjPrompts = {
         message: "Parent course URL (example: course/wit-hdip-comp-sci-2023)? ",
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
-            if (!value) {
-              reject("Cannot be empty");
-            }
-            if (!value.startsWith("course/")) {
-              reject("Must start with course/");
-            }
+            if (!value) reject("Cannot be empty");
+            if (!value.startsWith("course/")) reject("Must start with course/");
             resolve(true);
           });
         }
@@ -195,14 +162,10 @@ export const propertiesObjPrompts = {
     ];
 
     await inquirer.prompt(parentConfirm).then(async (answer) => {
-      if (!answer.parentConfirm) {
-        parentInput = [];
-      }
+      if (!answer.parentConfirm) parentInput = [];
     });
 
-    let parentObj: {
-      parent?: string;
-    } = {};
+    let parentObj: { parent?: string } = {};
 
     parentObj = await inquirer.prompt(parentInput);
     return parentObj;
@@ -233,12 +196,8 @@ export const propertiesObjPrompts = {
           message: `Enter URL for ${companion} (Include URL protocol: http:// or https://):`,
           validate: (value: string) => {
             return new Promise((resolve, reject) => {
-              if (!value) {
-                reject("Cannot be empty");
-              }
-              if (!value.startsWith("http://") && !value.startsWith("https://")) {
-                reject("Must include URL protocol: http:// or https://");
-              }
+              if (!value) reject("Cannot be empty");
+              if (!value.startsWith("http://") && !value.startsWith("https://")) reject("Must include URL protocol: http:// or https://");
               resolve(true);
             });
           },
