@@ -5,7 +5,8 @@ import { getFolderCountOfType, writeToTemplate, copyGenericTemplateFile } from "
 const oldName = new Map([
   ["topic", "topic"],
   ["segment", "unit"],
-  ["web", "web"]
+  ["web", "web"],
+  ["github", "github"]
 ]);
 
 export async function modelCommand(type: string, noDesc: boolean, icon: boolean, url: boolean) {

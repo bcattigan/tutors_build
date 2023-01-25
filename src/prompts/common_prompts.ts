@@ -131,15 +131,17 @@ export const commonPrompts = {
   },
 
   url: async function (type: string) {
+    let linkType: string;
+    type == "github" ? (linkType = "github.com/") : (linkType = "");
     const url = [
       {
         name: "link",
         type: "input",
-        message: `Enter URL for ${type} link (Include URL protocol: http:// or https://):`,
+        message: `Enter URL for ${type} link (include: http://${linkType} or https://${linkType}):`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
-            if (!value.startsWith("http://") && !value.startsWith("https://")) reject("Must include URL protocol: http:// or https://");
+            if (!value.startsWith(`http://${linkType}`) && !value.startsWith(`https://${linkType}`)) reject(`Must include: http://${linkType} or https://${linkType}`);
             resolve(true);
           });
         },
