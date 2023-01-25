@@ -76,6 +76,7 @@ export function getFolderCountOfType(type: string | undefined): { order: string;
       const directoryWalk = fs.readdirSync(".");
       directoryWalk.forEach((item) => {
         if (fs.statSync(item).isDirectory()) {
+          console.log(item);
           fullCount++;
           if (item.startsWith(type)) typeCount++;
         }
