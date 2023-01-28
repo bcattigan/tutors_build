@@ -3,6 +3,8 @@ import path from "path";
 import jsrender from "jsrender";
 import yaml from "js-yaml";
 import chalk from "chalk";
+import open from "open";
+import chokidar from "chokidar";
 
 export const currentDir = process.cwd();
 const nodePath = path.dirname(process.argv[1]);
@@ -69,28 +71,42 @@ export function getFolderCountOfType(type: string | undefined): { order: string;
   let orderObj: { order: string; folderPrefix: string };
   if (type) {
     let fullCount = 1;
-    let stringFullCount = "";
     let typeCount = 1;
-    let stringTypeCount = "";
     try {
       const directoryWalk = fs.readdirSync(".");
       directoryWalk.forEach((item) => {
         if (fs.statSync(item).isDirectory()) {
-          console.log(item);
           fullCount++;
           if (item.startsWith(type)) typeCount++;
         }
       });
-      fullCount < 10 ? (stringFullCount = `0${fullCount}`) : (stringFullCount = `${fullCount}`);
-      typeCount < 10 ? (stringTypeCount = `0${typeCount}`) : (stringTypeCount = `${typeCount}`);
+      const stringFullCount = fullCount < 10 ? `0${fullCount}` : `${fullCount}`;
+      const stringTypeCount = typeCount < 10 ? `0${typeCount}` : `${typeCount}`;
+      orderObj = { order: stringFullCount, folderPrefix: `${type}-${stringTypeCount}` };
     } catch (err) {
       console.log(chalk.red(`Error while checking count of folder type (${type}): ${err}`));
       process.exit();
     }
-    orderObj = { order: stringFullCount, folderPrefix: `${type}-${stringTypeCount}` };
   } else {
     console.log(chalk.red(`Error while checking count of folder type. Type was not defined`));
     process.exit();
   }
   return orderObj;
+}
+
+export async function watchForUpload(pathToOpen: string, archive = false) {
+  const extensions = archive ? ".zip" : ".png, .jpg , jpeg or .gif";
+  const pathName = path.join(currentDir, pathToOpen);
+  const watchPath = archive ? `${currentDir}/${pathToOpen}/*.zip` : `${currentDir}/${pathToOpen}/*.{png,jpg,jpeg,gif}`;
+  await open(pathName);
+  console.log(chalk.bgMagenta(`\n*** Please upload a ${extensions} file to ${path.basename(pathName)} ***`));
+  const watcher = chokidar.watch(watchPath);
+  console.log(chalk.yellow("\nWatching..."));
+  const fileAdded = new Promise(function (resolve) {
+    watcher.on("add", async (path) => {
+      resolve(path);
+    });
+  });
+  console.log(chalk.yellow(`file added: ${await fileAdded}`));
+  watcher.close();
 }
