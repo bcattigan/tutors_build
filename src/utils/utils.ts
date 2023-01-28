@@ -99,7 +99,7 @@ export async function watchForUpload(pathToOpen: string, archive = false) {
   const pathName = path.join(currentDir, pathToOpen);
   const watchPath = archive ? `${currentDir}/${pathToOpen}/*.zip` : `${currentDir}/${pathToOpen}/*.{png,jpg,jpeg,gif}`;
   await open(pathName);
-  console.log(chalk.bgMagenta(`\n*** Please upload a ${extensions} file to ${path.basename(pathName)} ***`));
+  console.log(chalk.bgMagenta(`\n*** Please upload a ${extensions} file to folder /${path.basename(pathName)} ***`));
   const watcher = chokidar.watch(watchPath);
   console.log(chalk.yellow("\nWatching..."));
   const fileAdded = new Promise(function (resolve) {

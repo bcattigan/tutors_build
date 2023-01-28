@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import { buildCourse } from "./commands/commands";
-import { buildTopic, buildAtTopicLevel } from "./commands/commands";
+import { buildCourse, buildTopic, buildAtTopicLevel } from "./commands/commands";
 
 program.name("tutors-build").description("CLI tool to help scaffold projects for the Tutors open source project (tutors.dev)");
 
@@ -18,6 +17,9 @@ program.option("-g, --github", "build a github link", () => {
 });
 program.option("-a, --archive", "build an archive", () => {
   buildAtTopicLevel("archive");
+});
+program.option("-l, --lab", "build a lab", () => {
+  buildAtTopicLevel("lab");
 });
 
 program.parse();

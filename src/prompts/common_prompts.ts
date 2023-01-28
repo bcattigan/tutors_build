@@ -2,26 +2,43 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import path from "path";
 import open from "open";
+import * as fs from "fs";
 import { currentDir } from "../utils/utils";
 
+function formatting(type: string) {
+  let formattedString = `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
+  const url = ["web", "github"];
+  if (url.includes(type)) formattedString = `${formattedString} link`;
+  return formattedString;
+}
+
 export const commonPrompts = {
-  titleAndDesc: async function (type: string, noDesc: boolean) {
-    const titleAndDesc = [
+  title: async function (type: string) {
+    const title = [
       {
         name: "title",
         type: "input",
-        message: `${type} title?`,
+        message: `${formatting(type)} title?`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
+            if (type == "course") if (fs.existsSync(value)) reject("Folder with this course name already exists in current location");
             resolve(true);
           });
         }
-      },
+      }
+    ];
+    console.log(chalk.greenBright(`Build ${formatting(type)}:`));
+    const titleObj: { title: string } = await inquirer.prompt(title);
+    return titleObj;
+  },
+
+  desc: async function (type: string) {
+    const desc = [
       {
         name: "desc",
         type: "input",
-        message: `${type} description?`,
+        message: `${formatting(type)} description?`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
@@ -30,12 +47,8 @@ export const commonPrompts = {
         }
       }
     ];
-
-    if (noDesc) titleAndDesc.pop();
-
-    const titleAndDescObj: { title: string; desc?: string } = await inquirer.prompt(titleAndDesc);
-
-    return titleAndDescObj;
+    const descObj: { desc: string } = await inquirer.prompt(desc);
+    return descObj;
   },
 
   icon: async function () {
@@ -87,9 +100,7 @@ export const commonPrompts = {
         }
       }
     ];
-
     let iconObj: { icon?: { type?: string; color?: string } } = {};
-
     await inquirer.prompt(iconOption).then(async (iconAnswer) => {
       if (iconAnswer.icon == 1) {
         await open("https://icon-sets.iconify.design/");
@@ -123,7 +134,6 @@ export const commonPrompts = {
         }
       }
     ];
-
     console.log(chalk.bgMagenta(`\n*** Please update ${file} ***\n`));
     const filePath = path.join(currentDir, pathToOpen);
     await open(filePath);
@@ -131,8 +141,7 @@ export const commonPrompts = {
   },
 
   url: async function (type: string) {
-    let linkType: string;
-    type == "github" ? (linkType = "github.com/") : (linkType = "");
+    const linkType = type == "github" ? "github.com/" : "";
     const url = [
       {
         name: "link",
@@ -150,9 +159,7 @@ export const commonPrompts = {
         }
       }
     ];
-
     const urlObj: { link: string } = await inquirer.prompt(url);
-
     return urlObj;
   }
 };

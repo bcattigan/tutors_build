@@ -1,14 +1,16 @@
 import chalk from "chalk";
 import * as fs from "fs";
 import path from "path";
-import { courseObjPrompts, propertiesObjPrompts, calenderPrompts } from "../prompts/course_prompts";
+import { propertiesObjPrompts, calenderPrompts } from "../prompts/course_prompts";
 import { commonPrompts } from "../prompts/common_prompts";
 import { writeToTemplate, copyGenericTemplateFile, createYamlFileFromObject, watchForUpload } from "../utils/utils";
-import { modelCommand } from "../utils/model_command";
+import { commandModel } from "./command_model";
 
 export async function buildCourse() {
-  console.log(chalk.greenBright("Build course:"));
-  const courseObj = await courseObjPrompts.titleAndDesc();
+  const courseObj = {
+    ...(await commonPrompts.title("course")),
+    ...(await commonPrompts.desc("course"))
+  }
   const propertiesObj = {
     ...(await propertiesObjPrompts.credits()),
     ...(await propertiesObjPrompts.ignorePin()),
@@ -35,7 +37,7 @@ export async function buildCourse() {
 
 export async function buildTopic() {
   if (fs.existsSync("course.md")) {
-    modelCommand("topic");
+    commandModel("topic");
   } else {
     console.log(chalk.red("Error: Topics can only be created at course level"));
   }
@@ -43,8 +45,16 @@ export async function buildTopic() {
 
 export async function buildAtTopicLevel(type: string) {
   if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit")) {
-    modelCommand(type);
+    commandModel(type);
   } else {
     console.log(chalk.red("Error: This type cannot be created at this level"));
+  }
+}
+
+export async function buildLab() {
+  if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit")) {
+    commandModel("topic");
+  } else {
+    console.log(chalk.red("Error: Topics can only be created at course level"));
   }
 }
