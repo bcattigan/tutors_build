@@ -13,7 +13,8 @@
     "topic": "tsc --build && node ./src/tutors_build.js -t && tsc --build --clean",
     "segment": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean",
     "web": "tsc --build && node ./src/tutors_build.js -w && tsc --build --clean",
-    "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean"
+    "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean",
+    "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "@types/inquirer": "^9.0.3",
     "@types/js-yaml": "^4.0.5",
     "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
     "commander": "^10.0.0",
     "inquirer": "^8.2.5",
     "js-yaml": "^4.1.0",

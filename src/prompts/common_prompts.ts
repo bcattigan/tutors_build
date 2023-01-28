@@ -5,7 +5,7 @@ import open from "open";
 import { currentDir } from "../utils/utils";
 
 export const commonPrompts = {
-  titleAndDesc: async function (type: string, noDesc = false) {
+  titleAndDesc: async function (type: string, noDesc: boolean) {
     const titleAndDesc = [
       {
         name: "title",
