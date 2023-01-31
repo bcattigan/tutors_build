@@ -3,42 +3,34 @@ import chalk from "chalk";
 import path from "path";
 import open from "open";
 import * as fs from "fs";
-import { currentDir } from "../utils/utils";
-
-function formatting(type: string) {
-  let formattedString = `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
-  const url = ["web", "github"];
-  if (url.includes(type)) formattedString = `${formattedString} link`;
-  return formattedString;
-}
+import { currentDir, utilFunctions } from "../utils/utils";
 
 export const commonPrompts = {
-  title: async function (type: string) {
+  title: async function (element: string) {
     const title = [
       {
         name: "title",
         type: "input",
-        message: `${formatting(type)} title?`,
+        message: `Enter ${element} title?`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
-            if (type == "course") if (fs.existsSync(value)) reject("Folder with this course name already exists in current location");
+            if (element == "course") if (fs.existsSync(value)) reject("Course with this name already exists in current location");
             resolve(true);
           });
         }
       }
     ];
-    console.log(chalk.greenBright(`Build ${formatting(type)}:`));
     const titleObj: { title: string } = await inquirer.prompt(title);
     return titleObj;
   },
 
-  desc: async function (type: string) {
+  desc: async function (element: string) {
     const desc = [
       {
         name: "desc",
         type: "input",
-        message: `${formatting(type)} description?`,
+        message: `Enter ${element} description?`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
@@ -51,7 +43,7 @@ export const commonPrompts = {
     return descObj;
   },
 
-  icon: async function () {
+  icon: async function (folder: string, actionLog: string[]) {
     const iconOption = [
       {
         name: "icon",
@@ -112,12 +104,14 @@ export const commonPrompts = {
             });
           }
         });
+      } else {
+        await utilFunctions.watchForUpload(folder, "image file (.png,.jpg,jpeg,.gif)", "*.{png,jpg,jpeg,gif}", actionLog);
       }
     });
     return iconObj;
   },
 
-  updateGenericTemplateFile: async function (file: string, pathToOpen: string) {
+  checkFileUpdated: async function (file: string, pathToOpen: string) {
     const updateFile = [
       {
         name: "updateFile",
@@ -134,23 +128,22 @@ export const commonPrompts = {
         }
       }
     ];
-    console.log(chalk.bgMagenta(`\n*** Please update ${file} ***\n`));
+    console.log(chalk.bgMagenta(`\n *** Please update ${file} *** \n`));
     const filePath = path.join(currentDir, pathToOpen);
     await open(filePath);
     await inquirer.prompt(updateFile);
   },
 
-  url: async function (type: string) {
-    const linkType = type == "github" ? "github.com/" : "";
+  url: async function (element: string) {
     const url = [
       {
         name: "link",
         type: "input",
-        message: `Enter URL for ${type} link (include: http://${linkType} or https://${linkType}):`,
+        message: `Enter URL for ${element} (Include URL protocol: http:// or https://):`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
-            if (!value.startsWith(`http://${linkType}`) && !value.startsWith(`https://${linkType}`)) reject(`Must include: http://${linkType} or https://${linkType}`);
+            if (!value.startsWith("http://") && !value.startsWith("https://")) reject("Must include URL protocol: http:// or https://");
             resolve(true);
           });
         },

@@ -1,6 +1,8 @@
 import inquirer from "inquirer";
+import { utilFunctions } from "../utils/utils";
+import { commonPrompts } from "./common_prompts";
 
-export const propertiesObjPrompts = {
+export const coursePrompts = {
   credits: async function () {
     const credits = [
       {
@@ -44,7 +46,7 @@ export const propertiesObjPrompts = {
     return ignorePinObj;
   },
 
-  auth: async function () {
+  auth: async function (folder: string, actionLog: string[]) {
     const auth = [
       {
         name: "auth",
@@ -56,6 +58,7 @@ export const propertiesObjPrompts = {
         ]
       }
     ];
+
     const whitelist = [
       {
         name: "whitelist",
@@ -67,11 +70,12 @@ export const propertiesObjPrompts = {
         ]
       }
     ];
+
     const enrollment = [
       {
         name: "enrollment",
         type: "list",
-        message: "Use enrollment feature?",
+        message: "Enable enrollment feature?",
         choices: [
           { name: "Yes", value: true },
           { name: "No", value: false }
@@ -79,7 +83,7 @@ export const propertiesObjPrompts = {
       }
     ];
 
-    const authObj: { auth: number; whitelist?: number; enrollment?: boolean } = { auth: 0 };
+    const authObj: { auth: number; whitelist?: number } = { auth: 0 };
 
     await inquirer.prompt(auth).then(async (answer) => {
       authObj.auth = answer.auth;
@@ -87,15 +91,19 @@ export const propertiesObjPrompts = {
         await inquirer.prompt(whitelist).then(async (answer) => {
           if (answer.whitelist == 1) {
             authObj.whitelist = answer.whitelist;
+            utilFunctions.copyTemplateFile("course/enrollment.yaml", folder, "enrollment.yaml", actionLog);
+            await commonPrompts.checkFileUpdated("enrollment.yaml", `${folder}/enrollment.yaml`);
           } else {
             await inquirer.prompt(enrollment).then(async (answer) => {
-              authObj.enrollment = answer.enrollment;
+              if (answer.enrollment) {
+                utilFunctions.copyTemplateFile("course/enrollment.yaml", folder, "enrollment.yaml", actionLog);
+                await commonPrompts.checkFileUpdated("enrollment.yaml", `${folder}/enrollment.yaml`);
+              }
             });
           }
         });
       }
     });
-
     return authObj;
   },
 
@@ -111,7 +119,8 @@ export const propertiesObjPrompts = {
         ]
       }
     ];
-    let parentInput = [
+
+    const parent = [
       {
         name: "parent",
         type: "input",
@@ -122,17 +131,21 @@ export const propertiesObjPrompts = {
             if (!value.startsWith("course/")) reject("Must start with course/");
             resolve(true);
           });
+        },
+        filter: (value: string) => {
+          return value.replace(/\s/g, "");
         }
       }
     ];
 
-    await inquirer.prompt(parentConfirm).then(async (answer) => {
-      if (!answer.parentConfirm) parentInput = [];
-    });
-
     let parentObj: { parent?: string } = {};
 
-    parentObj = await inquirer.prompt(parentInput);
+    await inquirer.prompt(parentConfirm).then(async (answer) => {
+      if (answer.parentConfirm) {
+        parentObj = await inquirer.prompt(parent);
+      }
+    });
+
     return parentObj;
   },
 
@@ -145,6 +158,7 @@ export const propertiesObjPrompts = {
         choices: ["Slack", "Zoom", "Moodle", "YouTube", "Teams"]
       }
     ];
+
     const companions: {
       name: string;
       type: string;
@@ -173,24 +187,21 @@ export const propertiesObjPrompts = {
       });
     });
 
-    let companionsObj: {
+    const companionsObj: {
       slack?: string;
       zoom?: string;
       moodle?: string;
       youtube?: string;
       teams?: string;
-    } = {};
+    } = await inquirer.prompt(companions);
 
-    companionsObj = await inquirer.prompt(companions);
     return companionsObj;
-  }
-};
+  },
 
-export const calenderPrompts = {
-  calendarConfirm: async function () {
-    const calendarConfirm = [
+  calendar: async function (title: string, actionLog: string[]) {
+    const calendar = [
       {
-        name: "calendarConfirm",
+        name: "calendar",
         type: "list",
         message: "Use calendar feature?",
         choices: [
@@ -200,12 +211,11 @@ export const calenderPrompts = {
       }
     ];
 
-    let calendar = false;
-
-    await inquirer.prompt(calendarConfirm).then(async (answer) => {
-      calendar = answer.calendarConfirm;
+    await inquirer.prompt(calendar).then(async (answer) => {
+      if (answer.calendar) {
+        utilFunctions.copyTemplateFile("course/calendar.yaml", title, "calendar.yaml", actionLog);
+        await commonPrompts.checkFileUpdated("calendar.yaml", `${title}/calendar.yaml`);
+      }
     });
-
-    return calendar;
   }
 };
