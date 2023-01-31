@@ -14,7 +14,8 @@
     "segment": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean",
     "web": "tsc --build && node ./src/tutors_build.js -w && tsc --build --clean",
     "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean",
-    "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean"
+    "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean",
+    "lab": "tsc --build && node ./src/tutors_build.js -l && tsc --build --clean"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
   },
   "homepage": "https://github.com/bcattigan/tutors_build#readme",
   "bin": {
-    "tutors-build": "./src/tutors_build.js"
+    "t_build": "./src/tutors_build.js"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",

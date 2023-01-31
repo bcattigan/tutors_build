@@ -2,26 +2,35 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import path from "path";
 import open from "open";
-import { currentDir } from "../utils/utils";
+import * as fs from "fs";
+import { currentDir, utilFunctions } from "../utils/utils";
 
 export const commonPrompts = {
-  titleAndDesc: async function (type: string, noDesc: boolean) {
-    const titleAndDesc = [
+  title: async function (element: string) {
+    const title = [
       {
         name: "title",
         type: "input",
-        message: `${type} title?`,
+        message: `Enter ${element} title?`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
+            if (element == "course") if (fs.existsSync(value)) reject("Course with this name already exists in current location");
             resolve(true);
           });
         }
-      },
+      }
+    ];
+    const titleObj: { title: string } = await inquirer.prompt(title);
+    return titleObj;
+  },
+
+  desc: async function (element: string) {
+    const desc = [
       {
         name: "desc",
         type: "input",
-        message: `${type} description?`,
+        message: `Enter ${element} description?`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
@@ -30,15 +39,11 @@ export const commonPrompts = {
         }
       }
     ];
-
-    if (noDesc) titleAndDesc.pop();
-
-    const titleAndDescObj: { title: string; desc?: string } = await inquirer.prompt(titleAndDesc);
-
-    return titleAndDescObj;
+    const descObj: { desc: string } = await inquirer.prompt(desc);
+    return descObj;
   },
 
-  icon: async function () {
+  icon: async function (folder: string, actionLog: string[]) {
     const iconOption = [
       {
         name: "icon",
@@ -87,9 +92,7 @@ export const commonPrompts = {
         }
       }
     ];
-
     let iconObj: { icon?: { type?: string; color?: string } } = {};
-
     await inquirer.prompt(iconOption).then(async (iconAnswer) => {
       if (iconAnswer.icon == 1) {
         await open("https://icon-sets.iconify.design/");
@@ -101,12 +104,14 @@ export const commonPrompts = {
             });
           }
         });
+      } else {
+        await utilFunctions.watchForUpload(folder, "image file (.png,.jpg,jpeg,.gif)", "*.{png,jpg,jpeg,gif}", actionLog);
       }
     });
     return iconObj;
   },
 
-  updateGenericTemplateFile: async function (file: string, pathToOpen: string) {
+  checkFileUpdated: async function (file: string, pathToOpen: string) {
     const updateFile = [
       {
         name: "updateFile",
@@ -123,25 +128,22 @@ export const commonPrompts = {
         }
       }
     ];
-
-    console.log(chalk.bgMagenta(`\n*** Please update ${file} ***\n`));
+    console.log(chalk.bgMagenta(`\n *** Please update ${file} *** \n`));
     const filePath = path.join(currentDir, pathToOpen);
     await open(filePath);
     await inquirer.prompt(updateFile);
   },
 
-  url: async function (type: string) {
-    let linkType: string;
-    type == "github" ? (linkType = "github.com/") : (linkType = "");
+  url: async function (element: string) {
     const url = [
       {
         name: "link",
         type: "input",
-        message: `Enter URL for ${type} link (include: http://${linkType} or https://${linkType}):`,
+        message: `Enter URL for ${element} (Include URL protocol: http:// or https://):`,
         validate: (value: string) => {
           return new Promise((resolve, reject) => {
             if (!value) reject("Cannot be empty");
-            if (!value.startsWith(`http://${linkType}`) && !value.startsWith(`https://${linkType}`)) reject(`Must include: http://${linkType} or https://${linkType}`);
+            if (!value.startsWith("http://") && !value.startsWith("https://")) reject("Must include URL protocol: http:// or https://");
             resolve(true);
           });
         },
@@ -150,9 +152,7 @@ export const commonPrompts = {
         }
       }
     ];
-
     const urlObj: { link: string } = await inquirer.prompt(url);
-
     return urlObj;
   }
 };

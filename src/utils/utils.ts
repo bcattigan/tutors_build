@@ -7,58 +7,28 @@ import open from "open";
 import chokidar from "chokidar";
 
 export const currentDir = process.cwd();
-const nodePath = path.dirname(process.argv[1]);
+export const nodePath = path.dirname(process.argv[1]);
 
-export function writeToTemplate(template: string, input: object, outputDir: string) {
-  const templatePath = path.join(nodePath, "templates", template);
-  const outputPath = path.join(currentDir, outputDir);
-  const outputFilePath = path.join(outputPath, path.basename(templatePath));
-  try {
-    const fileTemplate = fs.readFileSync(templatePath).toString();
-    const renderTemplate = jsrender.templates(fileTemplate);
-    const finalTemplate = renderTemplate.render(input);
-    if (!fs.existsSync(outputPath)) {
-      fs.mkdirSync(outputPath, { recursive: true });
-      console.log(chalk.yellow(`folder created: ${outputPath}`));
-    }
-    fs.writeFileSync(outputFilePath, finalTemplate);
-    console.log(chalk.yellow(`file created: ${outputFilePath}`));
-  } catch (err) {
-    catchFileErrors(outputFilePath, err, outputDir);
-  }
-}
+export const constants = {
+  oldNames: new Map([
+    ["course", "course"],
+    ["topic", "topic"],
+    ["segment", "unit"],
+    ["web link", "web"],
+    ["github link", "github"],
+    ["archive", "archive"],
+    ["lab", "book"]
+  ])
+};
 
-export function copyGenericTemplateFile(template: string, outputDir: string) {
-  const templatePath = path.join(nodePath, "templates", template);
-  const outputFilePath = path.join(currentDir, outputDir, path.basename(templatePath));
-  try {
-    fs.copyFileSync(templatePath, outputFilePath);
-    console.log(chalk.yellow(`${path.basename(outputFilePath)} created: ${outputFilePath}`));
-  } catch (err) {
-    catchFileErrors(outputFilePath, err, outputDir);
-  }
-}
-
-export function createYamlFileFromObject(fileName: string, input: object, outputDir: string) {
-  const outputFilePath = path.join(currentDir, outputDir, `${fileName}.yaml`);
-  try {
-    const data = yaml.dump(input);
-    fs.writeFileSync(outputFilePath, data, "utf8");
-    console.log(chalk.yellow(`${path.basename(outputFilePath)} created: ${outputFilePath}`));
-  } catch (err) {
-    catchFileErrors(outputFilePath, err, outputDir);
-  }
-}
-
-async function catchFileErrors(outputFilePath: string, error: unknown, dir: string) {
+async function catchFileErrors(outputFilePath: string, error: unknown, outputFolderPath: string) {
   console.log(chalk.red(`Error while creating: ${outputFilePath}: ${error}`));
-  const outputs = path.join(currentDir, dir);
-  if (fs.existsSync(outputs)) {
+  if (fs.existsSync(outputFolderPath)) {
     try {
-      fs.rmSync(outputs, { recursive: true });
-      console.log(chalk.blue("Note: Partially created folder/files were removed"));
+      fs.rmSync(outputFolderPath, { recursive: true });
+      console.log(chalk.blue(`Note: Partially created folder/files at ${outputFolderPath} were removed`));
     } catch (err) {
-      console.log(chalk.blue("Note: Partially created folder/files were not removed successfully, please remove manually:", err));
+      console.log(chalk.blue(`Note: Partially created folder/files at ${outputFolderPath} were not removed successfully, please remove manually:`, err));
     } finally {
       process.exit();
     }
@@ -67,46 +37,121 @@ async function catchFileErrors(outputFilePath: string, error: unknown, dir: stri
   }
 }
 
-export function getFolderCountOfType(type: string | undefined): { order: string; folderPrefix: string } {
-  let orderObj: { order: string; folderPrefix: string };
-  if (type) {
-    let fullCount = 1;
-    let typeCount = 1;
+export const utilFunctions = {
+  createFolder(outputFolder: string, actionLog: string[]) {
+    const outputFolderPath = path.join(currentDir, outputFolder);
     try {
-      const directoryWalk = fs.readdirSync(".");
-      directoryWalk.forEach((item) => {
-        if (fs.statSync(item).isDirectory()) {
-          fullCount++;
-          if (item.startsWith(type)) typeCount++;
-        }
-      });
-      const stringFullCount = fullCount < 10 ? `0${fullCount}` : `${fullCount}`;
-      const stringTypeCount = typeCount < 10 ? `0${typeCount}` : `${typeCount}`;
-      orderObj = { order: stringFullCount, folderPrefix: `${type}-${stringTypeCount}` };
+      if (!fs.existsSync(outputFolderPath)) {
+        fs.mkdirSync(outputFolderPath, { recursive: true });
+        actionLog.push(`folder created: ${outputFolderPath}`);
+      }
     } catch (err) {
-      console.log(chalk.red(`Error while checking count of folder type (${type}): ${err}`));
+      catchFileErrors(outputFolderPath, err, outputFolderPath);
+    }
+  },
+
+  writeStringToFile: function (outputFolder: string, outputFile: string, input: string, actionLog: string[]) {
+    this.createFolder(outputFolder, actionLog);
+    const outputFolderPath = path.join(currentDir, outputFolder);
+    const outputFilePath = path.join(outputFolderPath, outputFile);
+    try {
+      fs.writeFileSync(outputFilePath, input);
+      actionLog.push(`file created: ${outputFilePath}`);
+    } catch (err) {
+      catchFileErrors(outputFilePath, err, outputFolderPath);
+    }
+  },
+
+  writeToTemplate: function (template: string, outputFolder: string, outputFile: string, input: object, actionLog: string[]) {
+    this.createFolder(outputFolder, actionLog);
+    const templateFilePath = path.join(nodePath, "templates", template);
+    try {
+      const fileTemplate = fs.readFileSync(templateFilePath).toString();
+      const renderTemplate = jsrender.templates(fileTemplate);
+      const finalTemplate = renderTemplate.render(input);
+      this.writeStringToFile(outputFolder, outputFile, finalTemplate, actionLog);
+    } catch (err) {
+      console.log(chalk.red(`Error while trying to render template from ${templateFilePath}: ${err}`));
       process.exit();
     }
-  } else {
-    console.log(chalk.red(`Error while checking count of folder type. Type was not defined`));
-    process.exit();
-  }
-  return orderObj;
-}
+  },
 
-export async function watchForUpload(pathToOpen: string, archive = false) {
-  const extensions = archive ? ".zip" : ".png, .jpg , jpeg or .gif";
-  const pathName = path.join(currentDir, pathToOpen);
-  const watchPath = archive ? `${currentDir}/${pathToOpen}/*.zip` : `${currentDir}/${pathToOpen}/*.{png,jpg,jpeg,gif}`;
-  await open(pathName);
-  console.log(chalk.bgMagenta(`\n*** Please upload a ${extensions} file to ${path.basename(pathName)} ***`));
-  const watcher = chokidar.watch(watchPath);
-  console.log(chalk.yellow("\nWatching..."));
-  const fileAdded = new Promise(function (resolve) {
-    watcher.on("add", async (path) => {
-      resolve(path);
+  copyTemplateFile: function (template: string, outputFolder: string, outputFile: string, actionLog: string[]) {
+    this.createFolder(outputFolder, actionLog);
+    const templateFilePath = path.join(nodePath, "templates", template);
+    const outputFolderPath = path.join(currentDir, outputFolder);
+    const outputFilePath = path.join(outputFolderPath, outputFile);
+    try {
+      fs.copyFileSync(templateFilePath, outputFilePath);
+      actionLog.push(`${path.basename(outputFilePath)} created: ${outputFilePath}`);
+    } catch (err) {
+      catchFileErrors(outputFilePath, err, outputFolderPath);
+    }
+  },
+
+  createYamlFileFromObject: function (outputFolder: string, outputFile: string, input: object, actionLog: string[]) {
+    this.createFolder(outputFolder, actionLog);
+    const outputFolderPath = path.join(currentDir, outputFolder);
+    const outputFilePath = path.join(outputFolderPath, outputFile);
+    try {
+      const data = yaml.dump(input);
+      fs.writeFileSync(outputFilePath, data, "utf8");
+      actionLog.push(`${path.basename(outputFilePath)} created: ${outputFilePath}`);
+    } catch (err) {
+      catchFileErrors(outputFilePath, err, outputFolderPath);
+    }
+  },
+
+  watchForUpload: async function (uploadFolder: string, text: string, glob: string, actionLog: string[]) {
+    this.createFolder(uploadFolder, actionLog);
+    const uploadFolderPath = path.join(currentDir, uploadFolder);
+    const watchPath = `${uploadFolderPath}/${glob}`;
+    console.log(chalk.bgMagenta(`\n *** Please upload ${text} to folder /${path.basename(uploadFolderPath)} *** `));
+    await open(uploadFolderPath);
+    const watcher = chokidar.watch(watchPath);
+    console.log(chalk.bold("\nProgramme will resume once file uploaded. Watching..."));
+    const fileUploaded = new Promise(function (resolve) {
+      watcher.on("add", async (path) => {
+        console.log();
+        resolve(path);
+      });
     });
-  });
-  console.log(chalk.yellow(`file added: ${await fileAdded}`));
-  watcher.close();
-}
+    let uploadedFile = `${await fileUploaded}`;
+    if (path.basename(uploadFolderPath) == "img") {
+      const labImage = path.join(path.dirname(uploadedFile), `main${path.extname(uploadedFile)}`);
+      fs.renameSync(uploadedFile, labImage);
+      uploadedFile = labImage;
+    }
+    actionLog.push(`file uploaded: ${uploadedFile}`);
+    console.log(chalk.cyan("File upload detected, thank you"));
+    watcher.close();
+  },
+
+  getFolderCountOfElement: function (element: string) {
+    const elementType = constants.oldNames.get(element);
+    let orderObj: { order: string; folderPrefix: string };
+    if (elementType) {
+      let fullCount = 1;
+      let elementCount = 1;
+      try {
+        const directoryWalk = fs.readdirSync(".");
+        directoryWalk.forEach((item) => {
+          if (fs.statSync(item).isDirectory()) {
+            fullCount++;
+            if (item.startsWith(elementType)) elementCount++;
+          }
+        });
+        const stringFullCount = fullCount < 10 ? `0${fullCount}` : `${fullCount}`;
+        const stringElementCount = elementCount < 10 ? `0${elementCount}` : `${elementCount}`;
+        orderObj = { order: stringFullCount, folderPrefix: `${elementType}-${stringElementCount}` };
+      } catch (err) {
+        console.log(chalk.red(`Error while checking count of folders for element (${element}): ${err}`));
+        process.exit();
+      }
+    } else {
+      console.log(chalk.red(`Error while checking count of folders for element (${element}). Type was not defined in names map`));
+      process.exit();
+    }
+    return orderObj;
+  }
+};
