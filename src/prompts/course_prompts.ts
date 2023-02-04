@@ -198,7 +198,7 @@ export const coursePrompts = {
     return companionsObj;
   },
 
-  calendar: async function (title: string, actionLog: string[]) {
+  calendar: async function (folder: string, actionLog: string[]) {
     const calendar = [
       {
         name: "calendar",
@@ -213,9 +213,27 @@ export const coursePrompts = {
 
     await inquirer.prompt(calendar).then(async (answer) => {
       if (answer.calendar) {
-        utilFunctions.copyTemplateFile("course/calendar.yaml", title, "calendar.yaml", actionLog);
-        await commonPrompts.checkFileUpdated("calendar.yaml", `${title}/calendar.yaml`);
+        utilFunctions.copyTemplateFile("course/calendar.yaml", folder, "calendar.yaml", actionLog);
+        await commonPrompts.checkFileUpdated("calendar.yaml", `${folder}/calendar.yaml`);
       }
     });
+  },
+
+  labStepsAutoNumber: async function () {
+    const labStepsAutoNumber = [
+      {
+        name: "labStepsAutoNumber",
+        type: "list",
+        message: `Would you like lab steps to have a prefix (i.e. "01: Intro" instead of just "intro")?`,
+        choices: [
+          { name: "Yes", value: true },
+          { name: "No", value: false }
+        ]
+      }
+    ];
+
+    const labStepsAutoNumberObj: { labStepsAutoNumber: boolean } = await inquirer.prompt(labStepsAutoNumber);
+
+    return labStepsAutoNumberObj;
   }
 };

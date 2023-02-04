@@ -11,11 +11,12 @@
     "start": "tsc --build && node ./src/tutors_build.js && tsc --build --clean",
     "course": "tsc --build && node ./src/tutors_build.js -c && tsc --build --clean",
     "topic": "tsc --build && node ./src/tutors_build.js -t && tsc --build --clean",
-    "segment": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean",
+    "unit": "tsc --build && node ./src/tutors_build.js -u && tsc --build --clean",
     "web": "tsc --build && node ./src/tutors_build.js -w && tsc --build --clean",
     "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean",
     "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean",
-    "lab": "tsc --build && node ./src/tutors_build.js -l && tsc --build --clean"
+    "lab": "tsc --build && node ./src/tutors_build.js -l && tsc --build --clean",
+    "labStep": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean"
   },
   "repository": {
     "type": "git",

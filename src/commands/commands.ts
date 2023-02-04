@@ -13,7 +13,7 @@ export async function buildAtCourseLevel(element: string) {
     const context = new Context(element);
     context.runStrategy();
   } else {
-    console.log(chalk.red("Error: This element cannot be created at course level"));
+    console.log(chalk.red("Error: This type of element cannot be created at course level"));
   }
 }
 
@@ -22,6 +22,15 @@ export async function buildAtTopicLevel(element: string) {
     const context = new Context(element);
     context.runStrategy();
   } else {
-    console.log(chalk.red("Error: This element cannot be created at topic level"));
+    console.log(chalk.red("Error: This type of element cannot be created at topic level"));
+  }
+}
+
+export async function buildAtLabLevel(element: string) {
+  if (path.basename(process.cwd()).startsWith("book")) {
+    const context = new Context(element);
+    context.runStrategy();
+  } else {
+    console.log(chalk.red("Error: This type of element cannot be created at lab level"));
   }
 }
