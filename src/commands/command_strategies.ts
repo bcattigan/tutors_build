@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { commonPrompts } from "../prompts/common_prompts";
 import { coursePrompts } from "../prompts/course_prompts";
+import { labStepPrompts } from "../prompts/lab_step_prompts";
 import { constants, utilFunctions } from "../utils/utils";
 
 export interface Strategy {
@@ -14,25 +15,27 @@ export class CourseStrategy implements Strategy {
       ...(await commonPrompts.desc(element))
     };
 
-    utilFunctions.createFolder(courseObj.title, actionLog);
-    utilFunctions.writeToTemplate(`${constants.oldNames.get(element)}/${constants.oldNames.get(element)}.md`, courseObj.title, `${element}.md`, courseObj, actionLog);
+    const folderName = `${courseObj.title}`.replace(/\s/g, "-");
+    utilFunctions.createFolder(folderName, actionLog);
+    utilFunctions.writeToTemplate(`${constants.oldNames.get(element)}/${constants.oldNames.get(element)}.md`, folderName, `${element}.md`, courseObj, actionLog);
 
     let propertiesObj = {
       ...(await coursePrompts.credits()),
       ...(await coursePrompts.ignorePin()),
-      ...(await coursePrompts.auth(courseObj.title, actionLog)),
+      ...(await coursePrompts.auth(folderName, actionLog)),
       ...(await coursePrompts.parent()),
-      ...(await coursePrompts.companions())
+      ...(await coursePrompts.companions()),
+      ...(await coursePrompts.labStepsAutoNumber())
     };
-    await coursePrompts.calendar(courseObj.title, actionLog);
+    await coursePrompts.calendar(folderName, actionLog);
     propertiesObj = {
       ...propertiesObj,
-      ...(await commonPrompts.icon(courseObj.title, actionLog)),
+      ...(await commonPrompts.icon(folderName, actionLog)),
       ...{ hideVideos: false, ignore: ["topic-XX-EXAMPLE"] }
     };
 
-    utilFunctions.createYamlFileFromObject(courseObj.title, "properties.yaml", propertiesObj, actionLog);
-    utilFunctions.copyTemplateFile("course/package.json", courseObj.title, "package.json", actionLog);
+    utilFunctions.createYamlFileFromObject(folderName, "properties.yaml", propertiesObj, actionLog);
+    utilFunctions.copyTemplateFile("course/package.json", folderName, "package.json", actionLog);
   }
 }
 
@@ -43,20 +46,20 @@ export class TopicStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
   }
 }
 
-export class SegmentStrategy implements Strategy {
+export class UnitStrategy implements Strategy {
   async execute(element: string, actionLog: string[]): Promise<void> {
     const obj = {
       ...utilFunctions.getFolderCountOfElement(element),
       ...(await commonPrompts.title(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
     utilFunctions.createFolder(folderName, actionLog);
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
   }
@@ -70,7 +73,7 @@ export class WebStrategy implements Strategy {
       ...(await commonPrompts.desc(element)),
       ...(await commonPrompts.url(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -86,7 +89,7 @@ export class GithubStrategy implements Strategy {
       ...(await commonPrompts.desc(element)),
       ...(await commonPrompts.url(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -101,7 +104,7 @@ export class ArchiveStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -116,23 +119,38 @@ export class LabStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace("", "-");
     utilFunctions.createFolder(folderName, actionLog);
     utilFunctions.createFolder(`${folderName}/img`, actionLog);
+    utilFunctions.copyTemplateFile("lab/example.png", `${folderName}/img`, "example.png", actionLog);
     utilFunctions.createFolder(`${folderName}/archives`, actionLog);
+    utilFunctions.copyTemplateFile("lab/example.zip",`${folderName}/archives`, "example.zip", actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
-    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `00.${obj.title}.md`, obj, actionLog);
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `!title.${obj.title}.md`, obj, actionLog);
+  }
+}
+
+export class LabStepStrategy implements Strategy {
+  async execute(element: string, actionLog: string[]): Promise<void> {
+    const obj = {
+      ...utilFunctions.getFileCount(),
+      ...(await commonPrompts.title(element)),
+      ...(await labStepPrompts.prefix()),
+    };
+    const fileName = "prefix" in obj ? `${obj.order}.${obj.prefix}.md` : `${obj.order}.${obj.order}.md`
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, ".", fileName, obj, actionLog);
   }
 }
 
 const strategiesMap = new Map<string, Strategy>([
   ["course", new CourseStrategy()],
   ["topic", new TopicStrategy()],
-  ["segment", new SegmentStrategy()],
+  ["unit", new UnitStrategy()],
   ["web link", new WebStrategy()],
   ["github link", new GithubStrategy()],
   ["archive", new ArchiveStrategy()],
-  ["lab", new LabStrategy()]
+  ["lab", new LabStrategy()],
+  ["lab step", new LabStepStrategy()]
 ]);
 
 export class Context {

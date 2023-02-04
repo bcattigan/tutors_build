@@ -13,11 +13,12 @@ export const constants = {
   oldNames: new Map([
     ["course", "course"],
     ["topic", "topic"],
-    ["segment", "unit"],
+    ["unit", "unit"],
     ["web link", "web"],
     ["github link", "github"],
     ["archive", "archive"],
-    ["lab", "book"]
+    ["lab", "book"],
+    ["lab step", "lab step"]
   ])
 };
 
@@ -65,14 +66,15 @@ export const utilFunctions = {
   writeToTemplate: function (template: string, outputFolder: string, outputFile: string, input: object, actionLog: string[]) {
     this.createFolder(outputFolder, actionLog);
     const templateFilePath = path.join(nodePath, "templates", template);
+    const outputFolderPath = path.join(currentDir, outputFolder);
+    const outputFilePath = path.join(outputFolderPath, outputFile);
     try {
       const fileTemplate = fs.readFileSync(templateFilePath).toString();
       const renderTemplate = jsrender.templates(fileTemplate);
       const finalTemplate = renderTemplate.render(input);
       this.writeStringToFile(outputFolder, outputFile, finalTemplate, actionLog);
     } catch (err) {
-      console.log(chalk.red(`Error while trying to render template from ${templateFilePath}: ${err}`));
-      process.exit();
+      catchFileErrors(outputFilePath, err, outputFolderPath);
     }
   },
 
@@ -134,8 +136,8 @@ export const utilFunctions = {
       let fullCount = 1;
       let elementCount = 1;
       try {
-        const directoryWalk = fs.readdirSync(".");
-        directoryWalk.forEach((item) => {
+        const dirWalk = fs.readdirSync(".");
+        dirWalk.forEach((item) => {
           if (fs.statSync(item).isDirectory()) {
             fullCount++;
             if (item.startsWith(elementType)) elementCount++;
@@ -153,5 +155,42 @@ export const utilFunctions = {
       process.exit();
     }
     return orderObj;
+  },
+
+  getFileCount: function () {
+    let countObj: { order: string };
+    let count = 0;
+    try {
+      const dirWalk = fs.readdirSync(".");
+      dirWalk.forEach((item) => {
+        if (fs.statSync(item).isFile()) {
+          count++;
+        }
+      });
+      const stringCount = count < 10 ? `0${count}` : `${count}`;
+      countObj = { order: stringCount };
+    } catch (err) {
+      console.log(chalk.red(`Error while checking count of files: ${err}`));
+      process.exit();
+    }
+    return countObj;
+  },
+
+  getPropertiesYaml: function () {
+    let dir = process.cwd()
+    let properties: {labStepsAutoNumber?: boolean} =  {labStepsAutoNumber: false}
+    try {
+      while (path.basename(dir)!= "") {
+        const propertiesYaml = path.join(dir, "properties.yaml")
+        if (fs.existsSync(propertiesYaml)) {
+          properties = yaml.load(fs.readFileSync(propertiesYaml, 'utf8')) as object;
+          break;
+        }
+        dir = path.resolve(dir, '..');
+      }
+    } catch(err) {
+      console.log(chalk.red(`Error locating/reading properties.yaml: ${err}`));
+    }
+    return properties
   }
 };
