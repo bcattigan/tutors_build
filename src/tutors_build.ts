@@ -28,5 +28,8 @@ program.option("-l, --lab", "build a lab", () => {
 program.option("-s, --labstep", "build a lab step", () => {
   buildAtLabLevel("lab step");
 });
+program.option("-p, --presentation", "build a presentation", () => {
+  buildAtTopicLevel("presentation");
+});
 
 program.parse();

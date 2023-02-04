@@ -16,7 +16,8 @@
     "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean",
     "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean",
     "lab": "tsc --build && node ./src/tutors_build.js -l && tsc --build --clean",
-    "labStep": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean"
+    "labStep": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean",
+    "presentation": "tsc --build && node ./src/tutors_build.js -p && tsc --build --clean"
   },
   "repository": {
     "type": "git",
