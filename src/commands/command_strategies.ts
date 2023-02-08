@@ -157,6 +157,19 @@ export class PresentationStrategy implements Strategy {
   }
 }
 
+export class NoteStrategy implements Strategy {
+  async execute(element: string, actionLog: string[]): Promise<void> {
+    let obj = {
+      ...utilFunctions.getFolderCountOfElement(element),
+      ...(await commonPrompts.title(element)),
+      ...(await commonPrompts.desc(element))
+    };
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    utilFunctions.createFolder(folderName, actionLog);
+    obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
+  }
+}
+
 const strategiesMap = new Map<string, Strategy>([
   ["course", new CourseStrategy()],
   ["topic", new TopicStrategy()],
@@ -166,7 +179,8 @@ const strategiesMap = new Map<string, Strategy>([
   ["archive", new ArchiveStrategy()],
   ["lab", new LabStrategy()],
   ["lab step", new LabStepStrategy()],
-  ["presentation", new PresentationStrategy()]
+  ["presentation", new PresentationStrategy()],
+  ["note", new NoteStrategy()],
 ]);
 
 export class Context {

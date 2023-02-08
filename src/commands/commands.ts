@@ -18,12 +18,12 @@ export async function buildAtCourseLevel(element: string) {
 }
 
 export async function buildAtTopicLevel(element: string) {
-  if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit")) {
+  // if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit")) {
     const context = new Context(element);
     context.runStrategy();
-  } else {
-    console.log(chalk.red("Error: This type of element cannot be created at topic level"));
-  }
+  // } else {
+  //   console.log(chalk.red("Error: This type of element cannot be created at topic level"));
+  // }
 }
 
 export async function buildAtLabLevel(element: string) {
