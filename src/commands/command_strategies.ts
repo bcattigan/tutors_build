@@ -59,7 +59,7 @@ export class UnitStrategy implements Strategy {
       ...utilFunctions.getFolderCountOfElement(element),
       ...(await commonPrompts.title(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
   }
@@ -73,7 +73,7 @@ export class WebStrategy implements Strategy {
       ...(await commonPrompts.desc(element)),
       ...(await commonPrompts.url(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -89,7 +89,7 @@ export class GithubStrategy implements Strategy {
       ...(await commonPrompts.desc(element)),
       ...(await commonPrompts.url(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -104,7 +104,7 @@ export class ArchiveStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -119,12 +119,12 @@ export class LabStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace("", "-");
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     utilFunctions.createFolder(`${folderName}/img`, actionLog);
-    utilFunctions.copyTemplateFile("lab/example.png", `${folderName}/img`, "example.png", actionLog);
+    utilFunctions.copyTemplateFile(`${element}/example.png`, `${folderName}/img`, "example.png", actionLog);
     utilFunctions.createFolder(`${folderName}/archives`, actionLog);
-    utilFunctions.copyTemplateFile("lab/example.zip",`${folderName}/archives`, "example.zip", actionLog);
+    utilFunctions.copyTemplateFile(`${element}/example.zip`, `${folderName}/archives`, "example.zip", actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `!title.${obj.title}.md`, obj, actionLog);
   }
@@ -135,9 +135,9 @@ export class LabStepStrategy implements Strategy {
     const obj = {
       ...utilFunctions.getFileCount(),
       ...(await commonPrompts.title(element)),
-      ...(await labStepPrompts.prefix()),
+      ...(await labStepPrompts.prefix())
     };
-    const fileName = "prefix" in obj ? `${obj.order}.${obj.prefix}.md` : `${obj.order}.${obj.order}.md`
+    const fileName = "prefix" in obj ? `${obj.order}.${obj.prefix}.md` : `${obj.order}.${obj.order}.md`;
     utilFunctions.writeToTemplate(`${element}/${element}.md`, ".", fileName, obj, actionLog);
   }
 }
@@ -149,7 +149,7 @@ export class PresentationStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
     utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
@@ -164,9 +164,14 @@ export class NoteStrategy implements Strategy {
       ...(await commonPrompts.title(element)),
       ...(await commonPrompts.desc(element))
     };
-    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");;
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
+    utilFunctions.createFolder(`${folderName}/img`, actionLog);
+    utilFunctions.copyTemplateFile(`${element}/example.png`, `${folderName}/img`, "example.png", actionLog);
+    utilFunctions.createFolder(`${folderName}/archives`, actionLog);
+    utilFunctions.copyTemplateFile(`${element}/example.zip`, `${folderName}/archives`, "example.zip", actionLog);
     obj = { ...obj, ...(await commonPrompts.icon(folderName, actionLog)) };
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
   }
 }
 
@@ -180,7 +185,7 @@ const strategiesMap = new Map<string, Strategy>([
   ["lab", new LabStrategy()],
   ["lab step", new LabStepStrategy()],
   ["presentation", new PresentationStrategy()],
-  ["note", new NoteStrategy()],
+  ["note", new NoteStrategy()]
 ]);
 
 export class Context {
