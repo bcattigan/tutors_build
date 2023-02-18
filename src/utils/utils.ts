@@ -20,7 +20,8 @@ export const constants = {
     ["lab", "book"],
     ["lab step", "lab step"],
     ["presentation", "talk"],
-    ["note", "note"]
+    ["note", "note"],
+    ["panel presentation", "paneltalk"]
   ])
 };
 
