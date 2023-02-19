@@ -13,16 +13,25 @@ export async function buildAtCourseLevel(element: string) {
     const context = new Context(element);
     context.runStrategy();
   } else {
-    console.log(chalk.red("Error: This type of element cannot be created at course level"));
+    console.log(chalk.red("Error: This type of element can only be created at course level"));
   }
 }
 
-export async function buildAtTopicLevel(element: string) {
+export async function buildAtCourseOrTopicLevel(element: string) {
+  if (fs.existsSync("course.md") || path.basename(process.cwd()).startsWith("topic") ) {
+    const context = new Context(element);
+    context.runStrategy();
+  } else {
+    console.log(chalk.red("Error: This type of element can only be created at course or topic level"));
+  }
+}
+
+export async function buildAtTopicOrUnitLevel(element: string) {
   if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit")) {
     const context = new Context(element);
     context.runStrategy();
   } else {
-    console.log(chalk.red("Error: This type of element cannot be created at topic level"));
+    console.log(chalk.red("Error: This type of element can only be created at topic or unit level"));
   }
 }
 
@@ -31,15 +40,15 @@ export async function buildAtLabLevel(element: string) {
     const context = new Context(element);
     context.runStrategy();
   } else {
-    console.log(chalk.red("Error: This type of element cannot be created at lab level"));
+    console.log(chalk.red("Error: This type of element can only be created at lab level"));
   }
 }
 
 export async function buildAtUnitLevel(element: string) {
-  // if (path.basename(process.cwd()).startsWith("unit")) {
+  if (path.basename(process.cwd()).startsWith("unit")) {
     const context = new Context(element);
     context.runStrategy();
-  // } else {
-  //   console.log(chalk.red("Error: This type of element cannot be created at unit level"));
-  // }
+  } else {
+    console.log(chalk.red("Error: This type of element can only be created at unit level"));
+  }
 }

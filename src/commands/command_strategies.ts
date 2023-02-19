@@ -184,6 +184,8 @@ export class PanelPresentationStrategy implements Strategy {
     };
     const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
+    await utilFunctions.watchForUpload(folderName, "pdf file (.pdf)", "*.pdf", actionLog);
   }
 }
 
