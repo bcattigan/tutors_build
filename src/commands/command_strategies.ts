@@ -189,6 +189,18 @@ export class PanelPresentationStrategy implements Strategy {
   }
 }
 
+export class PanelNoteStrategy implements Strategy {
+  async execute(element: string, actionLog: string[]): Promise<void> {
+    const obj = {
+      ...utilFunctions.getFolderCountOfElement(element),
+      ...(await commonPrompts.title(element)),
+      ...(await commonPrompts.desc(element))
+    };
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
+    utilFunctions.createFolder(folderName, actionLog);
+  }
+}
+
 const strategiesMap = new Map<string, Strategy>([
   ["course", new CourseStrategy()],
   ["topic", new TopicStrategy()],
@@ -200,7 +212,8 @@ const strategiesMap = new Map<string, Strategy>([
   ["lab step", new LabStepStrategy()],
   ["presentation", new PresentationStrategy()],
   ["note", new NoteStrategy()],
-  ["panel presentation", new PanelPresentationStrategy ()]
+  ["panel presentation", new PanelPresentationStrategy ()],
+  ["panel note", new PanelNoteStrategy ()],
 ]);
 
 export class Context {
