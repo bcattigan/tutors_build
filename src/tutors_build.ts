@@ -37,5 +37,8 @@ program.option("-n, --note", "build a note", () => {
 program.option("-pp, --panelpresentation", "build a panel presentation", () => {
   buildAtUnitLevel("panel presentation");
 });
+program.option("-pn, --panelnote", "build a panel note", () => {
+  buildAtUnitLevel("panel note");
+});
 
 program.parse();
