@@ -198,6 +198,11 @@ export class PanelNoteStrategy implements Strategy {
     };
     const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
     utilFunctions.createFolder(folderName, actionLog);
+    utilFunctions.createFolder(`${folderName}/img`, actionLog);
+    utilFunctions.copyTemplateFile(`${element}/example.png`, `${folderName}/img`, "example.png", actionLog);
+    utilFunctions.createFolder(`${folderName}/archives`, actionLog);
+    utilFunctions.copyTemplateFile(`${element}/example.zip`, `${folderName}/archives`, "example.zip", actionLog);
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
   }
 }
 
