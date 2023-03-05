@@ -16,11 +16,12 @@
     "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean",
     "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean",
     "lab": "tsc --build && node ./src/tutors_build.js -l && tsc --build --clean",
-    "labStep": "tsc --build && node ./src/tutors_build.js -s && tsc --build --clean",
+    "labStep": "tsc --bVieweruild && node ./src/tutors_build.js -s && tsc --build --clean",
     "presentation": "tsc --build && node ./src/tutors_build.js -p && tsc --build --clean",
     "note": "tsc --build && node ./src/tutors_build.js -n && tsc --build --clean",
     "panelPresentation": "tsc --build && node ./src/tutors_build.js -pp && tsc --build --clean",
-    "panelNote": "tsc --build && node ./src/tutors_build.js -pn && tsc --build --clean"
+    "panelNote": "tsc --build && node ./src/tutors_build.js -pn && tsc --build --clean",
+    "video": "tsc --build && node ./src/tutors_build.js -v && tsc --build --clean"
   },
   "repository": {
     "type": "git",

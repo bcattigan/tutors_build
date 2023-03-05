@@ -18,7 +18,7 @@ export async function buildAtCourseLevel(element: string) {
 }
 
 export async function buildAtCourseOrTopicLevel(element: string) {
-  if (fs.existsSync("course.md") || path.basename(process.cwd()).startsWith("topic") ) {
+  if (fs.existsSync("course.md") || path.basename(process.cwd()).startsWith("topic")) {
     const context = new Context(element);
     context.runStrategy();
   } else {
@@ -45,10 +45,20 @@ export async function buildAtLabLevel(element: string) {
 }
 
 export async function buildAtUnitLevel(element: string) {
-  // if (path.basename(process.cwd()).startsWith("unit")) {
+  if (path.basename(process.cwd()).startsWith("unit")) {
     const context = new Context(element);
     context.runStrategy();
-  // } else {
-  //   console.log(chalk.red("Error: This type of element can only be created at unit level"));
-  // }
+  } else {
+    console.log(chalk.red("Error: This type of element can only be created at unit level"));
+  }
+}
+
+export async function buildAtResourceLevel(element: string) {
+  const resources = ["talk", "note", "book", "archive", "web", "github"];
+  if (resources.some((resource) => path.basename(process.cwd()).startsWith(resource))) {
+    const context = new Context(element);
+    context.runStrategy();
+  } else {
+    console.log(chalk.red("Error: This type of element can only be created at resource level"));
+  }
 }

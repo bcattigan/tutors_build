@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { commonPrompts } from "../prompts/common_prompts";
 import { coursePrompts } from "../prompts/course_prompts";
 import { labStepPrompts } from "../prompts/lab_step_prompts";
+import { videoPrompts } from "../prompts/video_prompts";
 import { constants, utilFunctions } from "../utils/utils";
 
 export interface Strategy {
@@ -206,6 +207,15 @@ export class PanelNoteStrategy implements Strategy {
   }
 }
 
+export class VideoStrategy implements Strategy {
+  async execute(element: string, actionLog: string[]): Promise<void> {
+    const obj = {
+      ...(await videoPrompts.video()),
+    };
+    utilFunctions.writeToTemplate(`${element}/videoid`, ".", "videoid", obj, actionLog);
+  }
+}
+
 const strategiesMap = new Map<string, Strategy>([
   ["course", new CourseStrategy()],
   ["topic", new TopicStrategy()],
@@ -219,6 +229,7 @@ const strategiesMap = new Map<string, Strategy>([
   ["note", new NoteStrategy()],
   ["panel presentation", new PanelPresentationStrategy ()],
   ["panel note", new PanelNoteStrategy ()],
+  ["video", new VideoStrategy ()],
 ]);
 
 export class Context {
