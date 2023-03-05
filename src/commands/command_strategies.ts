@@ -212,6 +212,7 @@ export class VideoStrategy implements Strategy {
     const obj = {
       ...(await videoPrompts.video()),
     };
+    utilFunctions.writeToTemplate(`${element}/videoid`, ".", "videoid", obj, actionLog);
   }
 }
 
