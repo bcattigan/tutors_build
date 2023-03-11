@@ -40,6 +40,9 @@ program.option("-pp, --panelpresentation", "build a panel presentation", () => {
 program.option("-pn, --panelnote", "build a panel note", () => {
   buildAtUnitLevel("panel note");
 });
+program.option("-pv, --panelvideo", "build a panel video", () => {
+  buildAtUnitLevel("panel video");
+});
 program.option("-v, --video", "add a video to a resource", () => {
   buildAtResourceLevel("video");
 });
