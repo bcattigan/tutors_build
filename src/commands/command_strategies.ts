@@ -207,6 +207,21 @@ export class PanelNoteStrategy implements Strategy {
   }
 }
 
+export class PanelVideoStrategy implements Strategy {
+  async execute(element: string, actionLog: string[]): Promise<void> {
+    const obj = {
+      ...utilFunctions.getFolderCountOfElement(element),
+      ...(await commonPrompts.title(element)),
+      ...(await commonPrompts.desc(element)),
+      ...(await videoPrompts.video())
+    };
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
+    utilFunctions.createFolder(folderName, actionLog);
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
+    utilFunctions.writeToTemplate(`${element}/videoid`, folderName, "videoid", obj, actionLog);
+  }
+}
+
 export class VideoStrategy implements Strategy {
   async execute(element: string, actionLog: string[]): Promise<void> {
     const obj = {
@@ -229,6 +244,7 @@ const strategiesMap = new Map<string, Strategy>([
   ["note", new NoteStrategy()],
   ["panel presentation", new PanelPresentationStrategy ()],
   ["panel note", new PanelNoteStrategy ()],
+  ["panel video", new PanelVideoStrategy ()],
   ["video", new VideoStrategy ()],
 ]);
 

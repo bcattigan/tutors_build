@@ -21,7 +21,8 @@
     "note": "tsc --build && node ./src/tutors_build.js -n && tsc --build --clean",
     "panelPresentation": "tsc --build && node ./src/tutors_build.js -pp && tsc --build --clean",
     "panelNote": "tsc --build && node ./src/tutors_build.js -pn && tsc --build --clean",
-    "video": "tsc --build && node ./src/tutors_build.js -v && tsc --build --clean"
+    "video": "tsc --build && node ./src/tutors_build.js -v && tsc --build --clean",
+    "panelVideo": "tsc --build && node ./src/tutors_build.js -v && tsc --build --clean"
   },
   "repository": {
     "type": "git",
