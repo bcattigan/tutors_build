@@ -27,11 +27,20 @@ export async function buildAtCourseOrTopicLevel(element: string) {
 }
 
 export async function buildAtTopicOrUnitLevel(element: string) {
-  if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit")) {
+  if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit") || path.basename(process.cwd()).startsWith("side")) {
     const context = new Context(element);
     context.runStrategy();
   } else {
     console.log(chalk.red("Error: This type of element can only be created at topic or unit level"));
+  }
+}
+
+export async function buildAtTopicLevel(element: string) {
+  if (path.basename(process.cwd()).startsWith("topic")) {
+    const context = new Context(element);
+    context.runStrategy();
+  } else {
+    console.log(chalk.red("Error: This type of element can only be created at topic level"));
   }
 }
 
