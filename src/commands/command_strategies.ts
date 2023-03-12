@@ -66,6 +66,18 @@ export class UnitStrategy implements Strategy {
   }
 }
 
+export class SideUnitStrategy implements Strategy {
+  async execute(element: string, actionLog: string[]): Promise<void> {
+    const obj = {
+      ...utilFunctions.getFolderCountOfElement(element),
+      ...(await commonPrompts.title(element))
+    };
+    const folderName = `${obj.folderPrefix}-${obj.title}`.replace(/\s/g, "-");
+    utilFunctions.createFolder(folderName, actionLog);
+    utilFunctions.writeToTemplate(`${element}/${element}.md`, folderName, `${constants.oldNames.get(element)}.md`, obj, actionLog);
+  }
+}
+
 export class WebStrategy implements Strategy {
   async execute(element: string, actionLog: string[]): Promise<void> {
     let obj = {
@@ -235,6 +247,7 @@ const strategiesMap = new Map<string, Strategy>([
   ["course", new CourseStrategy()],
   ["topic", new TopicStrategy()],
   ["unit", new UnitStrategy()],
+  ["side unit", new SideUnitStrategy ()],
   ["web link", new WebStrategy()],
   ["github link", new GithubStrategy()],
   ["archive", new ArchiveStrategy()],
@@ -245,7 +258,7 @@ const strategiesMap = new Map<string, Strategy>([
   ["panel presentation", new PanelPresentationStrategy ()],
   ["panel note", new PanelNoteStrategy ()],
   ["panel video", new PanelVideoStrategy ()],
-  ["video", new VideoStrategy ()],
+  ["video", new VideoStrategy ()]
 ]);
 
 export class Context {
