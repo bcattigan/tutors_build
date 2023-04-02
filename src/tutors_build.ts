@@ -1,8 +1,19 @@
 #!/usr/bin/env node
+import figlet from "figlet";
+import chalk from "chalk";
 import { program } from "commander";
-import { buildAtTopLevel, buildAtCourseLevel, buildAtCourseOrTopicLevel, buildAtTopicLevel, buildAtTopicOrUnitLevel, buildAtLabLevel, buildAtUnitLevel, buildAtResourceLevel} from "./commands/commands";
+import {
+  buildAtTopLevel,
+  buildAtCourseLevel,
+  buildAtCourseOrTopicLevel,
+  buildAtTopicLevel,
+  buildAtTopicOrUnitLevel,
+  buildAtLabLevel,
+  buildAtUnitLevel,
+  buildAtResourceLevel
+} from "./commands/commands";
 
-program.name("tutors-build").description("CLI tool to help scaffold projects for the Tutors open source project (tutors.dev)");
+program.name(chalk.blueBright("\n" + figlet.textSync("Tutors build") + "\n")).description("CLI tool to help scaffold components for the Tutors open source project (tutors.dev)");
 
 program.option("-c, --course", "build a course", () => {
   buildAtTopLevel("course");
@@ -51,3 +62,7 @@ program.option("-v, --video", "add a video to a resource", () => {
 });
 
 program.parse();
+
+if (process.argv.length < 3) {
+  program.help();
+}

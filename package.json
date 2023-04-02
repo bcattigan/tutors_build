@@ -51,11 +51,13 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@types/figlet": "^1.5.5",
     "@types/inquirer": "^9.0.3",
     "@types/js-yaml": "^4.0.5",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "commander": "^10.0.0",
+    "figlet": "^1.5.2",
     "inquirer": "^8.2.5",
     "js-yaml": "^4.1.0",
     "jsrender": "^1.0.12",

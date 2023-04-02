@@ -3,71 +3,57 @@ import chalk from "chalk";
 import path from "path";
 import { Context } from "./command_strategies";
 
-export async function buildAtTopLevel(element: string) {
+const errorString = "Error: This type of element can only be created at the following level(s):";
+
+function strategy(element: string) {
   const context = new Context(element);
   context.runStrategy();
 }
 
+function condition(element: string, conditions: string[]) {
+  if (conditions.some((item) => path.basename(process.cwd()).startsWith(item))) {
+    strategy(element);
+  } else {
+    console.log(chalk.red(`${errorString} ${conditions.toString()}`));
+  }
+}
+
+export async function buildAtTopLevel(element: string) {
+  strategy(element);
+}
+
 export async function buildAtCourseLevel(element: string) {
   if (fs.existsSync("course.md")) {
-    const context = new Context(element);
-    context.runStrategy();
+    strategy(element);
   } else {
-    console.log(chalk.red("Error: This type of element can only be created at course level"));
+    console.log(chalk.red(`${errorString} course`));
   }
 }
 
 export async function buildAtCourseOrTopicLevel(element: string) {
   if (fs.existsSync("course.md") || path.basename(process.cwd()).startsWith("topic")) {
-    const context = new Context(element);
-    context.runStrategy();
+    strategy(element);
   } else {
-    console.log(chalk.red("Error: This type of element can only be created at course or topic level"));
+    console.log(chalk.red(`${errorString} course,topic`));
   }
 }
 
 export async function buildAtTopicOrUnitLevel(element: string) {
-  if (path.basename(process.cwd()).startsWith("topic") || path.basename(process.cwd()).startsWith("unit") || path.basename(process.cwd()).startsWith("side")) {
-    const context = new Context(element);
-    context.runStrategy();
-  } else {
-    console.log(chalk.red("Error: This type of element can only be created at topic or unit level"));
-  }
+  condition(element, ["topic", "unit", "side"]);
 }
 
 export async function buildAtTopicLevel(element: string) {
-  if (path.basename(process.cwd()).startsWith("topic")) {
-    const context = new Context(element);
-    context.runStrategy();
-  } else {
-    console.log(chalk.red("Error: This type of element can only be created at topic level"));
-  }
+  condition(element, ["topic"]);
 }
 
 export async function buildAtLabLevel(element: string) {
-  if (path.basename(process.cwd()).startsWith("book")) {
-    const context = new Context(element);
-    context.runStrategy();
-  } else {
-    console.log(chalk.red("Error: This type of element can only be created at lab level"));
-  }
+  condition(element, ["book"]);
 }
 
 export async function buildAtUnitLevel(element: string) {
-  if (path.basename(process.cwd()).startsWith("unit")) {
-    const context = new Context(element);
-    context.runStrategy();
-  } else {
-    console.log(chalk.red("Error: This type of element can only be created at unit level"));
-  }
+  condition(element, ["unit"]);
 }
 
 export async function buildAtResourceLevel(element: string) {
-  const resources = ["talk", "note", "book", "archive", "web", "github"];
-  if (resources.some((resource) => path.basename(process.cwd()).startsWith(resource))) {
-    const context = new Context(element);
-    context.runStrategy();
-  } else {
-    console.log(chalk.red("Error: This type of element can only be created at resource level"));
-  }
+  condition(element, ["talk", "note", "book", "archive", "web", "github"]);
 }

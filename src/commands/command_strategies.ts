@@ -237,7 +237,7 @@ export class PanelVideoStrategy implements Strategy {
 export class VideoStrategy implements Strategy {
   async execute(element: string, actionLog: string[]): Promise<void> {
     const obj = {
-      ...(await videoPrompts.video()),
+      ...(await videoPrompts.video())
     };
     utilFunctions.writeToTemplate(`${element}/videoid`, ".", "videoid", obj, actionLog);
   }
@@ -247,7 +247,7 @@ const strategiesMap = new Map<string, Strategy>([
   ["course", new CourseStrategy()],
   ["topic", new TopicStrategy()],
   ["unit", new UnitStrategy()],
-  ["side unit", new SideUnitStrategy ()],
+  ["side unit", new SideUnitStrategy()],
   ["web link", new WebStrategy()],
   ["github link", new GithubStrategy()],
   ["archive", new ArchiveStrategy()],
@@ -255,10 +255,10 @@ const strategiesMap = new Map<string, Strategy>([
   ["lab step", new LabStepStrategy()],
   ["presentation", new PresentationStrategy()],
   ["note", new NoteStrategy()],
-  ["panel presentation", new PanelPresentationStrategy ()],
-  ["panel note", new PanelNoteStrategy ()],
-  ["panel video", new PanelVideoStrategy ()],
-  ["video", new VideoStrategy ()]
+  ["panel presentation", new PanelPresentationStrategy()],
+  ["panel note", new PanelNoteStrategy()],
+  ["panel video", new PanelVideoStrategy()],
+  ["video", new VideoStrategy()]
 ]);
 
 export class Context {
