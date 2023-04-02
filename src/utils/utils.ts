@@ -7,7 +7,7 @@ import open from "open";
 import chokidar from "chokidar";
 
 export const currentDir = process.cwd();
-export const nodePath = path.dirname(process.argv[1]);
+export const nodePath = require.main ? path.dirname(require.main.filename) : path.dirname(process.argv[1]);
 
 export const constants = {
   oldNames: new Map([
@@ -24,7 +24,7 @@ export const constants = {
     ["panel presentation", "paneltalk"],
     ["panel note", "panelnote"],
     ["panel video", "panelvideo"],
-    ["side unit", "side"],
+    ["side unit", "side"]
   ])
 };
 
@@ -183,20 +183,20 @@ export const utilFunctions = {
   },
 
   getPropertiesYaml: function () {
-    let dir = process.cwd()
-    let properties: {labStepsAutoNumber?: boolean} =  {labStepsAutoNumber: false}
+    let dir = process.cwd();
+    let properties: { labStepsAutoNumber?: boolean } = { labStepsAutoNumber: false };
     try {
-      while (path.basename(dir)!= "") {
-        const propertiesYaml = path.join(dir, "properties.yaml")
+      while (path.basename(dir) != "") {
+        const propertiesYaml = path.join(dir, "properties.yaml");
         if (fs.existsSync(propertiesYaml)) {
-          properties = yaml.load(fs.readFileSync(propertiesYaml, 'utf8')) as object;
+          properties = yaml.load(fs.readFileSync(propertiesYaml, "utf8")) as object;
           break;
         }
-        dir = path.resolve(dir, '..');
+        dir = path.resolve(dir, "..");
       }
-    } catch(err) {
+    } catch (err) {
       console.log(chalk.red(`Error locating/reading properties.yaml: ${err}`));
     }
-    return properties
+    return properties;
   }
 };
