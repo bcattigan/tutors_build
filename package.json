@@ -1,0 +1,66 @@
+{
+  "name": "tutors_build",
+  "version": "1.0.0",
+  "description": "Support tool for the Tutors open source project (tutors.dev)",
+  "main": "./src/tutors_build.js",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
+    "start": "tsc --build && node ./src/tutors_build.js && tsc --build --clean",
+    "course": "tsc --build && node ./src/tutors_build.js -c && tsc --build --clean",
+    "topic": "tsc --build && node ./src/tutors_build.js -t && tsc --build --clean",
+    "unit": "tsc --build && node ./src/tutors_build.js -u && tsc --build --clean",
+    "web": "tsc --build && node ./src/tutors_build.js -w && tsc --build --clean",
+    "github": "tsc --build && node ./src/tutors_build.js -g && tsc --build --clean",
+    "archive": "tsc --build && node ./src/tutors_build.js -a && tsc --build --clean",
+    "lab": "tsc --build && node ./src/tutors_build.js -l && tsc --build --clean",
+    "labStep": "tsc --bVieweruild && node ./src/tutors_build.js -s && tsc --build --clean",
+    "presentation": "tsc --build && node ./src/tutors_build.js -p && tsc --build --clean",
+    "note": "tsc --build && node ./src/tutors_build.js -n && tsc --build --clean",
+    "panelPresentation": "tsc --build && node ./src/tutors_build.js -pp && tsc --build --clean",
+    "panelNote": "tsc --build && node ./src/tutors_build.js -pn && tsc --build --clean",
+    "video": "tsc --build && node ./src/tutors_build.js -v && tsc --build --clean",
+    "panelVideo": "tsc --build && node ./src/tutors_build.js -v && tsc --build --clean",
+    "sideUnit": "tsc --build && node ./src/tutors_build.js -su && tsc --build --clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcattigan/tutors_build.git"
+  },
+  "keywords": [
+    "tutors"
+  ],
+  "author": "Bernard Cattigan, Tutors open source project",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bcattigan/tutors_build/issues"
+  },
+  "homepage": "https://github.com/bcattigan/tutors_build#readme",
+  "bin": {
+    "t_build": "./src/tutors_build.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
+    "prettier": "^2.8.4",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@types/figlet": "^1.5.5",
+    "@types/inquirer": "^9.0.3",
+    "@types/js-yaml": "^4.0.5",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "commander": "^10.0.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.5",
+    "js-yaml": "^4.1.0",
+    "jsrender": "^1.0.12",
+    "open": "^8.4.2"
+  }
+}
